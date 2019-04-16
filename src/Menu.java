@@ -6,6 +6,7 @@ import java.util.*;
 public class Menu extends JPanel {
 
     private final String GAME_TITLE = "TETRIS";
+    private final String BUTTON_LABEL = "START GAME";
 
     // MENU PANEL CONSTRUCTOR
     public Menu(){
@@ -43,19 +44,43 @@ public class Menu extends JPanel {
         g2d.setColor(Color.black);
         g2d.fill(new Rectangle2D.Double(box_x, box_y, box_size, box_size));
 
-        // DRAW TITLE TEXT
+        // DRAW MENU ELEMENTS (title text and start button)
 
-        // determine the font size in points from pixels (pixel size is 60% of the bounding box size)
-        double pixel_size = box_size * 0.4;
-        double font_size = 100 * Toolkit.getDefaultToolkit().getScreenResolution() / 72.0;
-        Font title_font = new Font(Font.SERIF, Font.BOLD, (int) font_size);
-        g2d.setFont(title_font);
+        // determine the title text height and set font accordingly
+        double title_pixel_size = box_size * 0.1;
+        double title_font_size = title_pixel_size * Toolkit.getDefaultToolkit().getScreenResolution() / 72.0;
+        Font title_font = new Font(Font.SERIF, Font.BOLD, (int) title_font_size);
+
+        // determine button height and font details
+        double btn_pixel_size = title_pixel_size * 0.25;
+        double btn_font_size = btn_pixel_size * Toolkit.getDefaultToolkit().getScreenResolution() / 72.0;
+        Font btn_font = new Font(Font.SANS_SERIF, Font.PLAIN, (int) btn_font_size);
+        double button_height = 2 * btn_pixel_size;
+
+        // determine total height for title and start button (top of text to bottom of button)
+        double total_height = title_pixel_size + (0.5 * title_pixel_size) + button_height;
 
         // determine title width
-        int text_width = g2d.getFontMetrics().charsWidth(GAME_TITLE.toCharArray(), 0, GAME_TITLE.toCharArray().length);
+        g2d.setFont(title_font);
+        int title_text_width = g2d.getFontMetrics().stringWidth(GAME_TITLE);
+
+        // calc title x,y
+        float title_x = (float) (((box_size - title_text_width) / 2.0) + box_x);
+        float title_y = (float) (((box_size - total_height) / 2.0) + box_y) + (float) title_pixel_size;
 
         // draw title
         g2d.setColor(Color.white);
-        g2d.drawString(GAME_TITLE, ((float) box_size - text_width) / 2, 100);
+        g2d.drawString(GAME_TITLE, title_x, title_y);
+
+        // draw button
+        float btn_y = (float) (title_y + (0.5 * title_pixel_size));
+        Rectangle2D.Double start_btn = new Rectangle2D.Double(title_x, btn_y, title_text_width, button_height);
+        g2d.draw(start_btn);
+
+        // draw button's text
+        g2d.setFont(btn_font);
+        int btn_text_width = g2d.getFontMetrics().stringWidth(BUTTON_LABEL);
+        g2d.drawString(BUTTON_LABEL, (float) (title_x + ((title_text_width - btn_text_width) / 2.0)), (float) (btn_y + btn_pixel_size + (0.25 * button_height)));
+
     }
 }
